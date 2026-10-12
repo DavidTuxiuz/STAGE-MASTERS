@@ -1,0 +1,40 @@
+// Server-side Supabase client for use in Server Components, Route Handlers,
+// and Server Actions. Reads/writes the auth cookie so sessions work with SSR.
+//
+// This file is the integration boundary the brief asks for: until real
+// Supabase credentials exist in .env.local, calls made through this client
+// will fail — they are not silently faked. See README.md "Connecting Supabase".
+
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { cookies } from "next/headers";
+
+export function createClient() {
+  const cookieStore = cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value, ...options });
+          } catch {
+            // Called from a Server Component — safe to ignore if you have
+            // middleware refreshing sessions.
+          }
+        },
+        remove(name: string, options: CookieOptions) {
+          try {
+            cookieStore.set({ name, value: "", ...options });
+          } catch {
+            // Same as above.
+          }
+        },
+      },
+    }
+  );
+}

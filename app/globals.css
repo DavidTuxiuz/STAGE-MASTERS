@@ -1,0 +1,59 @@
+:root {
+  --ink: #1c1b18;
+  --paper: #f6f1e7;
+  --paper-2: #ede6d6;
+  --brass: #9c7a3c;
+  --slate: #4b5560;
+  --rule: rgba(28, 27, 24, 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f2ede2;
+    --paper: #171613;
+    --paper-2: #221f1a;
+    --brass: #c39a54;
+    --slate: #a9b2bb;
+    --rule: rgba(242, 237, 226, 0.16);
+  }
+}
+
+:root[data-theme="dark"] {
+  --ink: #f2ede2;
+  --paper: #171613;
+  --paper-2: #221f1a;
+  --brass: #c39a54;
+  --slate: #a9b2bb;
+  --rule: rgba(242, 237, 226, 0.16);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+  }
+  a {
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
